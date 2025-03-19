@@ -25,8 +25,71 @@ MENU = {
 }
 
 profit = 0
+
+
 resources = {
     "water": 300,
     "milk": 200,
     "coffee": 100,
 }
+
+def is_resource_sufficient(order_ingredients):
+    """:returns true when orders can be made, false if ingredients aren't sufficient """
+    for item in order_ingredients:
+        if order_ingredients[item] >= resources[item]:
+            print(f"Sorry there is not enough {item}.")
+            return False
+    return True
+
+def process_coins():
+    """returns the total calculated from coins inserted"""
+    print("Please insert coins.")
+    total = int(input("how many quarters?")) * 0.25
+    total += int(input("how many dimes?")) * 0.10
+    total += int(input("how many nickels?")) * 0.5
+    total += int(input("how many pennies?")) * 0.01
+    return total
+
+def is_transaction_successful(money_received, drink_cost ):
+    """return true when payment is accepted , or return false if money is insufficient"""
+    if money_received >= drink_cost:
+        change = round(money_received - drink_cost, 2)
+        print(f"Here is ${change} in change")
+        global profit
+        profit += drink_cost
+        return True
+    else:
+        print("Sorry that is not enough money")
+        return False
+
+def make_coffee(drink_name, order_ingredients):
+    """deduct the required ingredients from the resources"""
+    for item in order_ingredients:
+        resources[item] -= order_ingredients[item]
+    print(f"Here is you {drink_name}😊")
+
+
+
+is_on = True
+# must show the prompt to the user again after completing an action
+while is_on:
+    user_response = input("What would you like? (espresso/latte/cappuccino): ").lower()
+    if user_response == "off":
+        is_on = False
+# Todo: 1. Print a report of the the coffee machine resources
+    elif user_response == "report":
+        print(f"print(Water: {resources['water']}ml")
+        print(f"Milk: {resources['milk']}ml")
+        print(f"Coffee: {resources['coffee']}")
+        print(f"Money: ${profit}")
+# Todo 2. Check to see if the resources are sufficient
+    else:
+        drink = MENU[user_response]
+        if is_resource_sufficient(drink["ingredients"]):
+            # Todo 3. Needs to be able to process coins
+           payment = process_coins()
+            # Todo 4. Check to see if the transaction is successful and return change
+           if is_transaction_successful(payment, drink["cost"]):
+               make_coffee(user_response, drink["ingredients"])
+
+# Todo 5. Make the coffee and deduct from the resources
